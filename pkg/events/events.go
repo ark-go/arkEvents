@@ -16,9 +16,8 @@ type watch struct {
 }
 
 // Создает Watch
-func NewWatch(name string) *watch {
+func NewWatch() *watch {
 	return &watch{
-		name:      name,
 		listeners: make(map[string][]chan iPayload),
 	}
 }

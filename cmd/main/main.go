@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	test := events.NewWatch("test")
+	test := events.NewWatch()
 	// структура для передачи данных в событиях
 	type PayloadCustom struct {
 		ww string

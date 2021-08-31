@@ -10,7 +10,7 @@
 
     import "github.com/ark-go/arkEvents/pkg/watch"
 
-    test := watch.NewWatch("test")
+    test := watch.NewWatch()
 
     go func() {
     	enter := test.AddListener("enter")

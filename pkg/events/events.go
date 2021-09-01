@@ -10,12 +10,11 @@ type iPayload interface {
 
 // watch - хранит все прослущиватели / подписки
 type watch struct {
-	name      string                     // имя наблюдателя
 	listeners map[string][]chan iPayload // слушатели
 	mu        sync.RWMutex
 }
 
-// Создает Watch
+// Создает Watch, для хранения зарегистрированных Listeners т.е. созданных потоков
 func NewWatch() *watch {
 	return &watch{
 		listeners: make(map[string][]chan iPayload),
@@ -27,6 +26,8 @@ func (w *watch) Count() int {
 	return len(w.listeners)
 
 }
+
+// возвращает все имена зарегистрированных событий
 func (w *watch) GetListenerName() []string {
 	m := []string{}
 	for key := range w.listeners {
@@ -66,6 +67,7 @@ func (b *watch) AddListener(name string) chan iPayload {
 // удаляет listener из экземпляра структуры watch.
 //	по каналу chan
 //	name - название/тип события
+//	ch - канал созданный AddListener
 func (b *watch) RemoveListener(name string, ch chan iPayload) (count int) {
 	b.mu.Lock()
 	defer b.mu.Unlock()

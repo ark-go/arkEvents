@@ -8,19 +8,20 @@ import (
 )
 
 func main() {
+	// создадим хранилище для наших каналов
 	test := events.NewWatch()
 	// структура для передачи данных в событиях
 	type PayloadCustom struct {
 		ww string
 	}
-	//
+	// в горутине создадим канал и будем его ждать
 	go func() {
-		enter := test.AddListener("enter")
+		enter := test.AddListener("enter") // вернет новый канал
 		for {
-			msg := <-enter
+			msg := <-enter // emit пошлет в канал данные
 			//! Желательно использовать проверку приведения типа !
 			if val, ok := msg.([]string); ok {
-				fmt.Println("enter 1:", val)
+				fmt.Println("enter 1:", val) // выполним нашу функцию
 			}
 		}
 	}()
@@ -48,13 +49,14 @@ func main() {
 			}
 		}
 	}()
+	// пример удаления слушателя
 	go func() {
 		enter := test.AddListener("enter")
 		for {
-			test.RemoveListener("enter", enter) // удаляем Listener
+			test.RemoveListener("enter", enter) //! удаляем Listener
 			msg := <-enter
 			if val, ok := msg.([]string); ok {
-				fmt.Println("Event3:", val)
+				fmt.Println("Event3:", val) // никогда не выполнится / Will never come true
 			}
 		}
 	}()
@@ -81,21 +83,22 @@ func main() {
 			fmt.Println("scroll 2:", msg.(string))
 		}
 	}()
-	time.Sleep(3 * time.Second)
+	time.Sleep(2 * time.Second)
 	test.Emit("scroll", "77 scroll 77")
 	test.Emit("enter", []string{"11111", "111"})
 	test.Emit("roll", []string{"222222"})
-	time.Sleep(3 * time.Second)
+	time.Sleep(2 * time.Second)
 	test.Emit("enter", []string{"33333", "33333"})
-	test.Emit("move", []string{"44444", "44455", "444466"})
-	time.Sleep(3 * time.Second)
+	test.Emit("move", []string{"44444", "11111", "444466"})
+	test.Emit("move", []string{"44444", "22222", "444466"})
+	test.Emit("move", []string{"44444", "33333", "444466"})
+	time.Sleep(2 * time.Second)
 	test.Emit("scroll", "77 scroll-2 77")
 	test.Emit("size", &PayloadCustom{ww: "Привет size"})
-	time.Sleep(3 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	fmt.Println("Количество типов:", test.Count())
 	fmt.Println("Все типы:", test.GetListenerName())
 	fmt.Println("Зарегистрировано enter", test.CountListener("enter"))
 	fmt.Println("Было зарегистрировано enter", test.DeleteAllListener("enter"))
-
 }

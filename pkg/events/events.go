@@ -38,7 +38,7 @@ func (b *watch) Count() int {
 }
 
 // возвращает все имена зарегистрированных событий
-func (b *watch) GetListenerName() []string {
+func (b *watch) GetListenerNames() []string {
 	b.mu.RLock()
 	defer b.mu.RUnlock()
 	m := []string{}

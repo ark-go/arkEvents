@@ -104,15 +104,16 @@ func main() {
 	test.Emit("scroll", "77 scroll-2 77")
 	test.Emit("size", &PayloadCustom{ww: "Привет size"})
 	test.Emit("funcTest", 90)
-	time.Sleep(1 * time.Second) // дадим выполнится горутине по funcTest
-	test.RemoveListener("funcTest", mm)
-	fmt.Println("Кол-во зарегистрироанных функций", test.CountRegFunc())
+	time.Sleep(1 * time.Second)                                           // дадим выполниться горутине по funcTest
+	test.RemoveListener("funcTest", mm)                                   // удаляем Listener
+	fmt.Println("Кол-во зарегистрированных функций", test.CountRegFunc()) // count  AddListenerFunc
 	test.Emit("funcTest", []string{"2", "44", "55"})
 	fmt.Println("Количество типов:", test.Count())
-	fmt.Println("Все типы:", test.GetListenerName())
+	fmt.Println("Все типы:", test.GetListenerNames())
 	fmt.Println("Зарегистрировано enter", test.CountListener("enter"))
-	fmt.Println("Было зарегистрировано enter", test.DeleteAllListener("enter"))
-	time.Sleep(15 * time.Second) // ждем последний emit 1990
+	fmt.Println("Было зарегистрировано enter", test.DeleteAllListener("enter")) // удаляем все зарегистрированные обработчики с "enter"
+	fmt.Println("Все типы:", test.GetListenerNames())
+	time.Sleep(1 * time.Second) // ждем горутины
 }
 
 // func testfunc(str interface{}) {

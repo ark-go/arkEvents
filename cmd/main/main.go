@@ -83,22 +83,38 @@ func main() {
 			fmt.Println("scroll 2:", msg.(string))
 		}
 	}()
-	time.Sleep(2 * time.Second)
-	test.Emit("scroll", "77 scroll 77")
+	// функция вызывается в горутине
+	mm := test.AddListenerFunc("funcTest", func(s interface{}) {
+		fmt.Println("Вызов функции 111:", s)
+	})
+	test.AddListenerFunc("funcTest", func(s interface{}) {
+		fmt.Println("Вызов функции 222:", s)
+	})
+	time.Sleep(1 * time.Second) // мы должны запустить все горутины
+	fmt.Println("Кол-во зарегистрироанных функций", test.CountRegFunc())
+
+	test.Emit("scroll", "scrooooooooooooooool")
 	test.Emit("enter", []string{"11111", "111"})
 	test.Emit("roll", []string{"222222"})
-	time.Sleep(2 * time.Second)
+
 	test.Emit("enter", []string{"33333", "33333"})
 	test.Emit("move", []string{"44444", "11111", "444466"})
 	test.Emit("move", []string{"44444", "22222", "444466"})
 	test.Emit("move", []string{"44444", "33333", "444466"})
-	time.Sleep(2 * time.Second)
 	test.Emit("scroll", "77 scroll-2 77")
 	test.Emit("size", &PayloadCustom{ww: "Привет size"})
-	time.Sleep(2 * time.Second)
-
+	test.Emit("funcTest", 90)
+	time.Sleep(1 * time.Second) // дадим выполнится горутине по funcTest
+	test.RemoveListener("funcTest", mm)
+	fmt.Println("Кол-во зарегистрироанных функций", test.CountRegFunc())
+	test.Emit("funcTest", []string{"2", "44", "55"})
 	fmt.Println("Количество типов:", test.Count())
 	fmt.Println("Все типы:", test.GetListenerName())
 	fmt.Println("Зарегистрировано enter", test.CountListener("enter"))
 	fmt.Println("Было зарегистрировано enter", test.DeleteAllListener("enter"))
+	time.Sleep(15 * time.Second) // ждем последний emit 1990
 }
+
+// func testfunc(str interface{}) {
+// 	fmt.Println("Вызов функции из Listener:", str[0].(string))
+// }
